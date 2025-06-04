@@ -9,13 +9,14 @@ interface IconBoxProps {
   onSelected: (icon: string) => void
 }
 
+function uniq<T>(list: T[]) {
+  return [...new Set(list).values()]
+}
+
 export default function IconBox({ onSelected, icons }: IconBoxProps) {
   let flowbox: Gtk.FlowBox
 
-  const arr =
-    icons instanceof Binding
-      ? icons.as((icons) => icons.map((icon) => ({ icon })))
-      : bind(new State(icons.map((icon) => ({ icon }))))
+  const arr = icons instanceof Binding ? icons.as((icons) => icons) : bind(new State(icons))
 
   function onKeyPressed(_: Gtk.EventControllerKey, keyval: number) {
     if (keyval === Gdk.KEY_Return) {
@@ -43,7 +44,7 @@ export default function IconBox({ onSelected, icons }: IconBoxProps) {
       $childActivated={childActivated}
     >
       <Gtk.EventControllerKey $keyPressed={onKeyPressed} />
-      <For each={arr}>{({ icon }) => <IconItem icon={icon} />}</For>
+      <For each={arr.as(uniq)}>{(icon) => <IconItem iconName={icon} />}</For>
     </Gtk.FlowBox>
   )
 }

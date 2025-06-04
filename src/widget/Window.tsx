@@ -2,9 +2,9 @@ import Adw from "gi://Adw"
 import Gtk from "gi://Gtk"
 import Gio from "gi://Gio"
 import IconBox from "./IconBox"
-import { copyToClipboard, getSettings, Schmea, searchIcons } from "@/lib"
+import { copyToClipboard, getSettings, searchIcons } from "@/lib"
 import { gettext as _ } from "gettext"
-import { bind, State } from "gjsx/state"
+import { State } from "gjsx/state"
 import { With } from "gjsx/gtk4"
 
 const Page = {
@@ -22,6 +22,8 @@ export default function Window({ app }: { app: Gtk.Application }) {
   let toasts: Adw.ToastOverlay
   let entry: Gtk.SearchEntry
   let stack: Gtk.Stack
+
+  const { colored, showAll } = getSettings()
 
   const selectedIcon = new State("")
   const icons = new State(new Array<string>())
@@ -52,9 +54,7 @@ export default function Window({ app }: { app: Gtk.Application }) {
 
   function init(win: Adw.ApplicationWindow) {
     entry.set_key_capture_widget(win)
-    bind(getSettings().app, Schmea.COLORED).subscribe(() => {
-      entry.emit("search-changed")
-    })
+    colored.subscribe(() => entry.emit("search-changed"))
   }
 
   return (
@@ -107,7 +107,7 @@ export default function Window({ app }: { app: Gtk.Application }) {
         <Adw.ToastOverlay $={(self) => (toasts = self)}>
           <Gtk.Stack $={(self) => (stack = self)}>
             <Adw.Bin _type="named" name={Page.SEARCH}>
-              <With value={bind(getSettings().app, Schmea.SHOW_ALL)}>
+              <With value={showAll}>
                 {(all) =>
                   all ? (
                     <Gtk.ScrolledWindow

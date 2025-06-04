@@ -6,7 +6,7 @@ import Gtk from "gi://Gtk"
 import Gio from "gi://Gio"
 import Window from "./widget/Window"
 import Preferences from "./widget/Preferences"
-import { initializeSettings } from "./lib"
+import { initSettings } from "./lib"
 
 void css`
   toast {
@@ -16,9 +16,9 @@ void css`
 
 @register({ GTypeName: "IconThemeBrowser" })
 export default class IconThemeBrowser extends Adw.Application {
-  window!: Adw.ApplicationWindow
-  preferences!: Adw.PreferencesDialog
-  about!: Adw.AboutDialog
+  declare window: Adw.ApplicationWindow
+  declare preferences: Adw.PreferencesDialog
+  declare about: Adw.AboutDialog
 
   constructor() {
     super({ application_id: pkg.name })
@@ -28,7 +28,7 @@ export default class IconThemeBrowser extends Adw.Application {
   }
 
   vfunc_activate() {
-    initializeSettings()
+    initSettings()
     apply()
 
     if (!this.window) this.window = Window({ app: this }) as Adw.ApplicationWindow

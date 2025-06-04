@@ -1,7 +1,7 @@
 import Gtk from "gi://Gtk"
 import Gdk from "gi://Gdk"
 import GLib from "gi://GLib"
-import { getSettings, Colored, Schmea } from "./settings"
+import { getSettings, Colored } from "./settings"
 
 function getTheme() {
   return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()!)
@@ -45,7 +45,7 @@ export function getThemeNames() {
 }
 
 export function searchIcons(search: string) {
-  const symbolic: Colored = getSettings().app.get_enum(Schmea.COLORED)
+  const symbolic = getSettings().colored.get()
 
   return getTheme()
     .icon_names.filter((name) => name.includes(search))

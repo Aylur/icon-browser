@@ -11,7 +11,7 @@
       <default>false</default>
       <summary>Show all available icons</summary>
     </key>
-    <key name="icon-size" type="i">
+    <key name="icon-size" type="u">
       <default>52</default>
       <summary>Size of icons in the list view.</summary>
     </key>

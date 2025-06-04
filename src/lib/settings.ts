@@ -1,8 +1,7 @@
 import Gtk from "gi://Gtk"
 import Gio from "gi://Gio"
 import { getThemeNames } from "./icon"
-
-let app_settings: Gio.Settings
+import { bind } from "gjsx/state"
 
 export enum Colored {
   BOTH,
@@ -10,41 +9,49 @@ export enum Colored {
   COLORED_ONLY,
 }
 
-export const Schmea = {
-  SHOW_ALL: "show-all",
-  ICON_SIZE: "icon-size",
-  THEME_NAME: "theme-name",
-  COLORED: "colored",
+const SHOW_ALL = "show-all"
+const ICON_SIZE = "icon-size"
+const THEME_NAME = "theme-name"
+const COLORED = "colored"
+
+let appSettings: Gio.Settings
+let gtkSettings: Gtk.Settings
+let settings: ReturnType<typeof createSettings>
+
+export function initSettings() {
+  appSettings = new Gio.Settings({ schema_id: pkg.name })
+  gtkSettings = Gtk.Settings.get_default()!
+
+  const name = appSettings.get_string(THEME_NAME)
+
+  if (getThemeNames().includes(name)) {
+    gtkSettings.gtk_icon_theme_name = name
+  } else {
+    appSettings.set_string(THEME_NAME, gtkSettings.gtk_icon_theme_name)
+  }
+
+  settings = createSettings()
+}
+
+function createSettings() {
+  return {
+    showAll: bind<boolean>(appSettings, SHOW_ALL),
+    setShowAll: (v: boolean) => appSettings.set_boolean(SHOW_ALL, v),
+
+    iconSize: bind<number>(appSettings, ICON_SIZE),
+    setIconSize: (v: number) => appSettings.set_uint(ICON_SIZE, v),
+
+    themeName: bind<string>(appSettings, THEME_NAME),
+    setThemeName: (v: string) => appSettings.set_string(THEME_NAME, v),
+
+    colored: bind<Colored>(appSettings, COLORED).as(() => appSettings.get_enum(COLORED)),
+    setColored: (v: Colored) => appSettings.set_enum(COLORED, v),
+
+    theme: bind(gtkSettings, "gtkIconThemeName"),
+    setTheme: (v: string) => (gtkSettings.gtkIconThemeName = v),
+  }
 }
 
 export function getSettings() {
-  if (!app_settings) app_settings = new Gio.Settings({ schema_id: pkg.name })
-
-  return {
-    app: app_settings,
-    gtk: Gtk.Settings.get_default()!,
-  }
-}
-
-export function initializeSettings() {
-  const { app, gtk } = getSettings()
-
-  const setting = app.get_string(Schmea.THEME_NAME)
-
-  if (getThemeNames().includes(setting)) {
-    return (gtk.gtk_icon_theme_name = setting)
-  }
-
-  app.set_string(Schmea.THEME_NAME, gtk.gtk_icon_theme_name)
-}
-
-export function getTheme() {
-  return getSettings().gtk.gtk_icon_theme_name
-}
-
-export function setTheme(theme: string) {
-  const { app, gtk } = getSettings()
-
-  app.set_string(Schmea.THEME_NAME, theme)
-  gtk.gtk_icon_theme_name = theme
+  return settings
 }

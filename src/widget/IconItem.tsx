@@ -1,7 +1,7 @@
 import Gtk from "gi://Gtk"
 import { css } from "gjsx/gtk4/style"
 import { register, property } from "gjsx/gobject"
-import { getSettings, Schmea } from "@/lib"
+import { getSettings } from "@/lib"
 import { This } from "gjsx/gtk4"
 import { bind } from "gjsx/state"
 
@@ -31,24 +31,18 @@ void css`
 
 @register({ GTypeName: "IconItem" })
 export default class IconItem extends Gtk.FlowBoxChild {
-  @property(String) declare iconName: string
+  @property(String) iconName: string
 
-  constructor({ icon }: { icon?: string }) {
+  constructor({ iconName = "" }: { iconName?: string }) {
     super()
     this.add_css_class("icon-item")
-    if (icon) this.iconName = icon
-    this.render()
-  }
+    this.iconName = iconName
 
-  private render() {
-    const { app } = getSettings()
+    const { iconSize } = getSettings()
 
-    return (
-      <This this={this}>
-        <Gtk.Image
-          iconName={bind(this, "iconName")}
-          pixelSize={bind<number>(app, Schmea.ICON_SIZE)}
-        />
+    void (
+      <This this={this as IconItem}>
+        <Gtk.Image iconName={bind(this, "iconName")} pixelSize={iconSize} />
       </This>
     )
   }
