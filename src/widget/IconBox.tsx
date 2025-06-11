@@ -1,11 +1,10 @@
-import Gtk from "gi://Gtk?version=4.0"
-import Gdk from "gi://Gdk?version=4.0"
+import Gtk from "gi://Gtk"
+import Gdk from "gi://Gdk"
 import IconItem from "./IconItem"
-import { bind, Binding, State } from "gjsx/state"
-import { For } from "gjsx/gtk4"
+import { Accessor, For } from "gjsx"
 
 interface IconBoxProps {
-  icons: Binding<Array<string>> | Array<string>
+  icons: Accessor<Array<string>> | Array<string>
   onSelected: (icon: string) => void
 }
 
@@ -16,7 +15,7 @@ function uniq<T>(list: T[]) {
 export default function IconBox({ onSelected, icons }: IconBoxProps) {
   let flowbox: Gtk.FlowBox
 
-  const arr = icons instanceof Binding ? icons.as((icons) => icons) : bind(new State(icons))
+  const arr = icons instanceof Accessor ? icons(uniq) : new Accessor(() => uniq(icons))
 
   function onKeyPressed(_: Gtk.EventControllerKey, keyval: number) {
     if (keyval === Gdk.KEY_Return) {
@@ -44,7 +43,7 @@ export default function IconBox({ onSelected, icons }: IconBoxProps) {
       $childActivated={childActivated}
     >
       <Gtk.EventControllerKey $keyPressed={onKeyPressed} />
-      <For each={arr.as(uniq)}>{(icon) => <IconItem iconName={icon} />}</For>
+      <For each={arr}>{(icon) => <IconItem iconName={icon} />}</For>
     </Gtk.FlowBox>
   )
 }

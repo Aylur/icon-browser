@@ -7,6 +7,9 @@
     "type": "git",
     "url": "https://github.com/Aylur/icon-browser.git"
   },
+  "bugs": {
+    "url": "https://github.com/Aylur/icon-browser/issues"
+  },
   "funding": {
     "type": "kofi",
     "url": "https://ko-fi.com/aylur"

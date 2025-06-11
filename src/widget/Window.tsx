@@ -2,10 +2,9 @@ import Adw from "gi://Adw"
 import Gtk from "gi://Gtk"
 import Gio from "gi://Gio"
 import IconBox from "./IconBox"
-import { copyToClipboard, getSettings, searchIcons } from "@/lib"
+import { copyToClipboard, getSettings, searchIcons } from "#/lib"
 import { gettext as _ } from "gettext"
-import { State } from "gjsx/state"
-import { With } from "gjsx/gtk4"
+import { With, createState } from "gjsx"
 
 const Page = {
   SEARCH: "search",
@@ -18,30 +17,33 @@ const menu = [
   [_("About"), "app.about", "copy-symbolic"],
 ] as const
 
-export default function Window({ app }: { app: Gtk.Application }) {
+export default function Window(props: {
+  app: Adw.Application
+  ref: (win: Adw.ApplicationWindow) => void
+}) {
   let toasts: Adw.ToastOverlay
   let entry: Gtk.SearchEntry
   let stack: Gtk.Stack
 
   const { colored, showAll } = getSettings()
 
-  const selectedIcon = new State("")
-  const icons = new State(new Array<string>())
+  const [selectedIcon, setSelectedIcon] = createState("")
+  const [icons, setIcons] = createState(new Array<string>())
 
   function search({ text }: Gtk.SearchEntry) {
     entry.grab_focus()
-    selectedIcon.set("")
+    setSelectedIcon("")
 
     if (text === "") {
       stack.visibleChildName = Page.SEARCH
     } else {
-      icons.set(searchIcons(text))
+      setIcons(searchIcons(text))
       stack.visibleChildName = icons.get().length > 0 ? Page.GRID : Page.NOT_FOUND
     }
   }
 
   function select(icon?: string) {
-    if (icon) selectedIcon.set(icon)
+    if (icon) setSelectedIcon(icon)
     copyToClipboard(selectedIcon.get())
 
     toasts.add_toast(
@@ -55,12 +57,14 @@ export default function Window({ app }: { app: Gtk.Application }) {
   function init(win: Adw.ApplicationWindow) {
     entry.set_key_capture_widget(win)
     colored.subscribe(() => entry.emit("search-changed"))
+    win.present()
+    props.ref(win)
   }
 
   return (
     <Adw.ApplicationWindow
       $={init}
-      application={app}
+      application={props.app}
       defaultWidth={600}
       defaultHeight={500}
       widthRequest={360}
@@ -134,7 +138,7 @@ export default function Window({ app }: { app: Gtk.Application }) {
               hscrollbarPolicy={Gtk.PolicyType.NEVER}
               vscrollbarPolicy={Gtk.PolicyType.AUTOMATIC}
             >
-              <IconBox icons={icons()} onSelected={select} />
+              <IconBox icons={icons} onSelected={select} />
             </Gtk.ScrolledWindow>
             <Adw.StatusPage
               _type="named"
@@ -154,8 +158,8 @@ export default function Window({ app }: { app: Gtk.Application }) {
           spacing={12}
           visible={selectedIcon(Boolean)}
         >
-          <Gtk.Image iconName={selectedIcon()} pixelSize={24} />
-          <Gtk.Label label={selectedIcon()} selectable />
+          <Gtk.Image iconName={selectedIcon} pixelSize={24} />
+          <Gtk.Label label={selectedIcon} selectable />
         </Gtk.Box>
       </Adw.ToolbarView>
     </Adw.ApplicationWindow>

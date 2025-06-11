@@ -7,7 +7,7 @@
     "moduleResolution": "Bundler",
     "skipLibCheck": true,
     "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"] },
+    "paths": { "#/*": ["./src/*"] },
     "jsx": "react-jsx",
     "jsxImportSource": "gjsx/gtk4"
   }

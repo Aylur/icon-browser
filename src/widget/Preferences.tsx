@@ -2,10 +2,11 @@ import Adw from "gi://Adw"
 import Gtk from "gi://Gtk"
 import Gdk from "gi://Gdk"
 import { gettext as _ } from "gettext"
-import { getSettings, getThemeNames } from "@/lib"
+import { getSettings, getThemeNames } from "#/lib"
 
-export default function Preferences() {
+export default function Preferences({ ref }: { ref: (dialog: Adw.PreferencesDialog) => void }) {
   let dialog: Adw.PreferencesDialog
+
   const themes = getThemeNames()
   const { showAll, setShowAll, iconSize, setIconSize, theme, setTheme, colored, setColored } =
     getSettings()
@@ -16,8 +17,13 @@ export default function Preferences() {
     }
   }
 
+  function init(self: Adw.PreferencesDialog) {
+    dialog = self
+    ref(self)
+  }
+
   return (
-    <Adw.PreferencesDialog $={(self) => (dialog = self)} title={_("Browser Preferences")}>
+    <Adw.PreferencesDialog $={init} title={_("Browser Preferences")}>
       <Gtk.EventControllerKey $key-pressed={onKeyPressed} />
       <Adw.PreferencesPage title={_("Browser Preferences")}>
         <Adw.PreferencesGroup>

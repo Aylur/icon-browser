@@ -35,7 +35,7 @@
       src = pkgs.buildNpmPackage {
         name = "source";
         src = ./.;
-        npmDepsHash = "sha256-RThLJdFAGQHfgeKjgh5yvLCtVjYEDUgd8zVkhsSalP0=";
+        npmDepsHash = "sha256-Eh5y1Vbb3+vuFrxwiRUhch4pBA1heEgP7B8eidAd+E4=";
         makeCacheWritable = true;
         dontBuild = true;
         installPhase = ''

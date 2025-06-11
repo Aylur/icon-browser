@@ -1,7 +1,7 @@
 import Gtk from "gi://Gtk"
 import Gio from "gi://Gio"
 import { getThemeNames } from "./icon"
-import { bind } from "gjsx/state"
+import { createBinding as bind } from "gjsx"
 
 export enum Colored {
   BOTH,
@@ -19,7 +19,7 @@ let gtkSettings: Gtk.Settings
 let settings: ReturnType<typeof createSettings>
 
 export function initSettings() {
-  appSettings = new Gio.Settings({ schema_id: pkg.name })
+  appSettings = new Gio.Settings({ schema_id: import.meta.appId })
   gtkSettings = Gtk.Settings.get_default()!
 
   const name = appSettings.get_string(THEME_NAME)
@@ -44,7 +44,7 @@ function createSettings() {
     themeName: bind<string>(appSettings, THEME_NAME),
     setThemeName: (v: string) => appSettings.set_string(THEME_NAME, v),
 
-    colored: bind<Colored>(appSettings, COLORED).as(() => appSettings.get_enum(COLORED)),
+    colored: bind<Colored>(appSettings, COLORED)(() => appSettings.get_enum(COLORED)),
     setColored: (v: Colored) => appSettings.set_enum(COLORED, v),
 
     theme: bind(gtkSettings, "gtkIconThemeName"),

@@ -1,9 +1,8 @@
 import Gtk from "gi://Gtk"
 import { css } from "gjsx/gtk4/style"
 import { register, property } from "gjsx/gobject"
-import { getSettings } from "@/lib"
-import { This } from "gjsx/gtk4"
-import { bind } from "gjsx/state"
+import { getSettings } from "#/lib"
+import { This, createBinding } from "gjsx"
 
 void css`
   flowboxchild.icon-item {
@@ -42,7 +41,7 @@ export default class IconItem extends Gtk.FlowBoxChild {
 
     void (
       <This this={this as IconItem}>
-        <Gtk.Image iconName={bind(this, "iconName")} pixelSize={iconSize} />
+        <Gtk.Image iconName={createBinding(this, "iconName")} pixelSize={iconSize} />
       </This>
     )
   }
