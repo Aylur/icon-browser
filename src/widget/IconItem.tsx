@@ -1,8 +1,8 @@
 import Gtk from "gi://Gtk"
-import { css } from "gjsx/gtk4/style"
-import { register, property } from "gjsx/gobject"
+import { css } from "gnim/gtk4/style"
+import { register, property } from "gnim/gobject"
 import { getSettings } from "#/lib"
-import { This, createBinding } from "gjsx"
+import { This, createBinding } from "gnim"
 
 void css`
   flowboxchild.icon-item {

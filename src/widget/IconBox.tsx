@@ -1,7 +1,7 @@
 import Gtk from "gi://Gtk"
 import Gdk from "gi://Gdk"
 import IconItem from "./IconItem"
-import { Accessor, For } from "gjsx"
+import { Accessor, For } from "gnim"
 
 interface IconBoxProps {
   icons: Accessor<Array<string>> | Array<string>

@@ -4,7 +4,7 @@ import Gio from "gi://Gio"
 import IconBox from "./IconBox"
 import { copyToClipboard, getSettings, searchIcons } from "#/lib"
 import { gettext as _ } from "gettext"
-import { With, createState } from "gjsx"
+import { With, createState } from "gnim"
 
 const Page = {
   SEARCH: "search",

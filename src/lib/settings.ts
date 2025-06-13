@@ -1,7 +1,7 @@
 import Gtk from "gi://Gtk"
 import Gio from "gi://Gio"
 import { getThemeNames } from "./icon"
-import { createBinding as bind } from "gjsx"
+import { createBinding as bind } from "gnim"
 
 export enum Colored {
   BOTH,

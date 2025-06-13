@@ -26,7 +26,7 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
-    "gjsx": "github:aylur/gjsx"
+    "gnim": "github:aylur/gnim"
   },
   "prettier": {
     "semi": false,
