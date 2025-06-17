@@ -24,7 +24,7 @@ export default function Preferences({ ref }: { ref: (dialog: Adw.PreferencesDial
 
   return (
     <Adw.PreferencesDialog $={init} title={_("Browser Preferences")}>
-      <Gtk.EventControllerKey $key-pressed={onKeyPressed} />
+      <Gtk.EventControllerKey onKeyPressed={onKeyPressed} />
       <Adw.PreferencesPage title={_("Browser Preferences")}>
         <Adw.PreferencesGroup>
           <Adw.SwitchRow
@@ -33,7 +33,7 @@ export default function Preferences({ ref }: { ref: (dialog: Adw.PreferencesDial
               "Turning this on might cause some lag if the theme contains a lot of icons",
             )}
             active={showAll}
-            $$active={({ active }) => setShowAll(active)}
+            onNotifyActive={({ active }) => setShowAll(active)}
           />
           <Adw.SpinRow title={_("Icon Size")} subtitle={_("Size of the icons in the grid")}>
             <Gtk.Adjustment
@@ -42,7 +42,7 @@ export default function Preferences({ ref }: { ref: (dialog: Adw.PreferencesDial
               stepIncrement={1}
               pageIncrement={4}
               value={iconSize}
-              $$value={({ value }) => setIconSize(value)}
+              onNotifyValue={({ value }) => setIconSize(value)}
             />
           </Adw.SpinRow>
           <Adw.ComboRow
@@ -51,14 +51,14 @@ export default function Preferences({ ref }: { ref: (dialog: Adw.PreferencesDial
             enableSearch
             model={Gtk.StringList.new(themes)}
             selected={themes.findIndex((v) => v == theme.get())}
-            $$selected={({ selected }) => setTheme(themes[selected])}
+            onNotifySelected={({ selected }) => setTheme(themes[selected])}
           />
           <Adw.ComboRow
             title={_("Color")}
             subtitle={_("What kind of icons to show")}
             model={Gtk.StringList.new([_("Both"), _("Symbolic Only"), _("Colored Only")])}
             selected={colored}
-            $$selected={({ selected }) => setColored(selected)}
+            onNotifySelected={({ selected }) => setColored(selected)}
           />
         </Adw.PreferencesGroup>
       </Adw.PreferencesPage>

@@ -25,7 +25,8 @@ export default function IconBox({ onSelected, icons }: IconBoxProps) {
     }
   }
 
-  function childActivated(_: Gtk.FlowBox, { iconName }: IconItem) {
+  function childActivated(_: Gtk.FlowBox, boxchild: Gtk.FlowBoxChild) {
+    const { iconName } = boxchild as IconItem
     onSelected(iconName)
   }
 
@@ -40,9 +41,9 @@ export default function IconBox({ onSelected, icons }: IconBoxProps) {
       columnSpacing={4}
       rowSpacing={4}
       maxChildrenPerLine={99}
-      $childActivated={childActivated}
+      onChildActivated={childActivated}
     >
-      <Gtk.EventControllerKey $keyPressed={onKeyPressed} />
+      <Gtk.EventControllerKey onKeyPressed={onKeyPressed} />
       <For each={arr}>{(icon) => <IconItem iconName={icon} />}</For>
     </Gtk.FlowBox>
   )

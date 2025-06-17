@@ -75,28 +75,28 @@ export default function Window(props: {
         topBarStyle={Adw.ToolbarStyle.RAISED}
         bottomBarStyle={Adw.ToolbarStyle.RAISED}
       >
-        <Adw.HeaderBar _type="top" centeringPolicy={Adw.CenteringPolicy.STRICT}>
+        <Adw.HeaderBar $type="top" centeringPolicy={Adw.CenteringPolicy.STRICT}>
           <Gtk.Button
-            _type="start"
+            $type="start"
             $={(self) => self.add_css_class("suggested-action")}
             visible={selectedIcon(Boolean)}
-            $clicked={() => select()}
+            onClicked={() => select()}
           >
             <Gtk.Box spacing={4}>
               <Gtk.Image iconName="edit-copy-symbolic" />
               <Gtk.Label label={_("Copy")} />
             </Gtk.Box>
           </Gtk.Button>
-          <Adw.Clamp _type="title" tighteningThreshold={400} hexpand>
+          <Adw.Clamp $type="title" tighteningThreshold={400} hexpand>
             <Gtk.SearchEntry
               $={(self) => (entry = self)}
               searchDelay={200}
               placeholderText={_("Search for icons by name")}
-              $searchChanged={search}
-              $searchStarted={(self) => self.grab_focus()}
+              onSearchChanged={search}
+              onSearchStarted={(self) => self.grab_focus()}
             />
           </Adw.Clamp>
-          <Gtk.MenuButton _type="end" iconName="open-menu-symbolic">
+          <Gtk.MenuButton $type="end" iconName="open-menu-symbolic">
             <Gio.Menu
               $={(self) =>
                 menu.map(([label, action, icon]) => {
@@ -110,7 +110,7 @@ export default function Window(props: {
         </Adw.HeaderBar>
         <Adw.ToastOverlay $={(self) => (toasts = self)}>
           <Gtk.Stack $={(self) => (stack = self)}>
-            <Adw.Bin _type="named" name={Page.SEARCH}>
+            <Adw.Bin $type="named" name={Page.SEARCH}>
               <With value={showAll}>
                 {(all) =>
                   all ? (
@@ -132,7 +132,7 @@ export default function Window(props: {
               </With>
             </Adw.Bin>
             <Gtk.ScrolledWindow
-              _type="named"
+              $type="named"
               name={Page.GRID}
               vexpand
               hscrollbarPolicy={Gtk.PolicyType.NEVER}
@@ -141,7 +141,7 @@ export default function Window(props: {
               <IconBox icons={icons} onSelected={select} />
             </Gtk.ScrolledWindow>
             <Adw.StatusPage
-              _type="named"
+              $type="named"
               name={Page.NOT_FOUND}
               iconName="system-search-symbolic"
               title={_("No Results found")}
@@ -150,7 +150,7 @@ export default function Window(props: {
           </Gtk.Stack>
         </Adw.ToastOverlay>
         <Gtk.Box
-          _type="bottom"
+          $type="bottom"
           halign={Gtk.Align.CENTER}
           hexpand
           marginTop={8}
