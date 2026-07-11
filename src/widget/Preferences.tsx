@@ -6,6 +6,7 @@ import { bind } from "gnim"
 
 export default function PreferencesPage() {
   const t = App.gettext
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const gtkSettings = Gtk.Settings.get_default()!
   const themes = getThemeNames()
   const theme = bind(gtkSettings, "gtk-icon-theme-name")

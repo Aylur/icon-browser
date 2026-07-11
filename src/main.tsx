@@ -1,5 +1,5 @@
 import "./style.css"
-import pkg from "package.json"
+import pkg from "../package.json"
 import Adw from "gi://Adw?version=1"
 import Gio from "gi://Gio?version=2.0"
 import GLib from "gi://GLib?version=2.0"

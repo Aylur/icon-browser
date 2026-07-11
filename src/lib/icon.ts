@@ -6,6 +6,7 @@ import GObject from "gi://GObject?version=2.0"
 import Gtk from "gi://Gtk?version=4.0"
 
 function getTheme() {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()!)
 }
 

@@ -6,11 +6,12 @@
     "strict": true,
     "moduleResolution": "Bundler",
     "skipLibCheck": true,
-    "baseUrl": ".",
+    "rootDir": ".",
     "paths": { "#/*": ["./src/*"] },
     "jsx": "react-jsx",
     "jsxImportSource": "gnim",
     "types": ["gi", "gnim"],
     "typeRoots": ["./.gnim/types"]
-  }
+  },
+  "include": ["./src/**/*"]
 }
