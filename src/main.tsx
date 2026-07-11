@@ -66,7 +66,12 @@ export default class App extends Adw.Application {
           heightRequest={360}
           title={t("Icon Browser")}
         >
-          <WindowContent />
+          <Adw.ToolbarView
+            topBarStyle={Adw.ToolbarStyle.RAISED}
+            bottomBarStyle={Adw.ToolbarStyle.RAISED}
+          >
+            <WindowContent />
+          </Adw.ToolbarView>
         </Adw.ApplicationWindow>
         <Adw.PreferencesDialog
           ref={(ref) => (App.preferences = ref)}

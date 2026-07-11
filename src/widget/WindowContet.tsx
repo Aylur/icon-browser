@@ -1,9 +1,11 @@
-import { copyToClipboard, iconList } from "#/lib"
+import { copyIconFile, copyToClipboard, iconList } from "#/lib"
 import App from "#/main"
 import Adw from "gi://Adw?version=1"
 import Gio from "gi://Gio?version=2.0"
+import GLib from "gi://GLib?version=2.0"
 import Gtk from "gi://Gtk?version=4.0"
 import { computed, createState, effect, With } from "gnim"
+import IconDetailsDialog from "./IconDetailsDialog"
 import IconGrid from "./IconGrid"
 
 const Page = {
@@ -18,6 +20,7 @@ export default function WindowContent() {
 
   let entry: Gtk.SearchEntry
   let toasts: Adw.ToastOverlay
+  let dialog: Adw.Dialog
 
   const [search, setSearch] = createState("")
   const [stackChild, setStackChild] = createState(Page.SEARCH)
@@ -51,16 +54,39 @@ export default function WindowContent() {
     }
   }
 
-  function onSelect(icon?: string) {
-    if (icon) setSelectedIcon(icon)
-    copyToClipboard(selectedIcon.peek())
+  function copyName(icon: string) {
+    copyToClipboard(icon)
+    toasts.add_toast(new Adw.Toast({ title: t("Copied to clipboard"), timeout: 1 }))
+  }
 
-    toasts.add_toast(
-      new Adw.Toast({
-        title: t("Copied to clipboard"),
-        timeout: 1,
-      }),
-    )
+  function copyFile(icon: string) {
+    copyIconFile(icon)
+      .catch((e) => {
+        const error =
+          e instanceof Error || e instanceof GLib.Error ? e.message : String(e)
+        toasts.add_toast(new Adw.Toast({ title: error, timeout: 1 }))
+        console.error(error)
+      })
+      .then((success) => {
+        if (success) {
+          toasts.add_toast(new Adw.Toast({ title: t("Copied Icon"), timeout: 1 }))
+        }
+      })
+  }
+
+  function onSelect(icon: string) {
+    setSelectedIcon(icon)
+
+    switch (settings.selectBehavior.peek()) {
+      case "copy-name":
+        copyName(icon)
+        break
+      case "copy-file":
+        copyFile(icon)
+        break
+      case "open-dialog":
+        return dialog.present(App.window)
+    }
   }
 
   effect(() => {
@@ -68,22 +94,14 @@ export default function WindowContent() {
   })
 
   return (
-    <Adw.ToolbarView
-      topBarStyle={Adw.ToolbarStyle.RAISED}
-      bottomBarStyle={Adw.ToolbarStyle.RAISED}
-    >
+    <>
+      <IconDetailsDialog
+        onCopyName={copyName}
+        onCopyFile={copyFile}
+        iconName={selectedIcon}
+        ref={(ref) => (dialog = ref)}
+      />
       <Adw.HeaderBar slot="top" centeringPolicy={Adw.CenteringPolicy.STRICT}>
-        <Gtk.Button
-          slot="start"
-          ref={(self) => self.add_css_class("suggested-action")}
-          visible={hasSelectedIcon}
-          onClicked={() => onSelect()}
-        >
-          <Gtk.Box spacing={4}>
-            <Gtk.Image iconName="edit-copy-symbolic" />
-            <Gtk.Label label={t("Copy")} />
-          </Gtk.Box>
-        </Gtk.Button>
         <Adw.Clamp slot="title" tighteningThreshold={400} hexpand>
           <Gtk.SearchEntry
             ref={(self) => (entry = self)}
@@ -108,7 +126,11 @@ export default function WindowContent() {
                     hscrollbarPolicy={Gtk.PolicyType.NEVER}
                     vscrollbarPolicy={Gtk.PolicyType.AUTOMATIC}
                   >
-                    <IconGrid model={allIcons} onSelected={onSelect} />
+                    <IconGrid
+                      model={allIcons}
+                      onActivated={onSelect}
+                      onSelected={setSelectedIcon}
+                    />
                   </Gtk.ScrolledWindow>
                 ) : (
                   <Adw.StatusPage
@@ -127,7 +149,7 @@ export default function WindowContent() {
             hscrollbarPolicy={Gtk.PolicyType.NEVER}
             vscrollbarPolicy={Gtk.PolicyType.AUTOMATIC}
           >
-            <IconGrid model={list} onSelected={onSelect} />
+            <IconGrid model={list} onActivated={onSelect} onSelected={setSelectedIcon} />
           </Gtk.ScrolledWindow>
           <Adw.StatusPage
             slot="named"
@@ -150,6 +172,6 @@ export default function WindowContent() {
         <Gtk.Image iconName={selectedIcon} pixelSize={24} />
         <Gtk.Label label={selectedIcon} selectable />
       </Gtk.Box>
-    </Adw.ToolbarView>
+    </>
   )
 }

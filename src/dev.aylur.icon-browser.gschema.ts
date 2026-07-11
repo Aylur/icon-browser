@@ -1,9 +1,15 @@
 import { defineSchemaList, Schema, Enum } from "gnim/schema"
 
-const symbolic = new Enum("dev.aylur.icon-browser", [
+const symbolic = new Enum("dev.aylur.icon-browser.symbolic", [
   "both",
   "symbolic-only",
   "colored-only",
+])
+
+const selectBehavior = new Enum("dev.aylur.icon-browser.select-behavior", [
+  "copy-name",
+  "copy-file",
+  "open-dialog",
 ])
 
 export const schema = new Schema({
@@ -24,6 +30,9 @@ export const schema = new Schema({
   })
   .key("colored", symbolic, {
     default: "both",
+  })
+  .key("select-behavior", selectBehavior, {
+    default: "open-dialog",
   })
 
 export default defineSchemaList([schema])

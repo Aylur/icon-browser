@@ -9,7 +9,16 @@ export default function PreferencesPage() {
   const gtkSettings = Gtk.Settings.get_default()!
   const themes = getThemeNames()
   const theme = bind(gtkSettings, "gtk-icon-theme-name")
-  const { showAll, setShowAll, iconSize, setIconSize, colored, setColored } = App.settings
+  const {
+    showAll,
+    setShowAll,
+    iconSize,
+    setIconSize,
+    colored,
+    setColored,
+    selectBehavior,
+    setSelectBehavior,
+  } = App.settings
 
   return (
     <Adw.PreferencesPage title={t("Browser Preferences")}>
@@ -51,6 +60,19 @@ export default function PreferencesPage() {
           )}
           onNotifySelected={({ selected }) =>
             setColored((["both", "symbolic-only", "colored-only"] as const)[selected])
+          }
+        />
+        <Adw.ComboRow
+          title={t("Select Behaviour")}
+          subtitle={t("Action that should happen on icon selection")}
+          model={Gtk.StringList.new([t("Copy Name"), t("Copy File"), t("Open Dialog")])}
+          selected={selectBehavior.as(
+            (v) => ({ "copy-name": 0, "copy-file": 1, "open-dialog": 2 })[v],
+          )}
+          onNotifySelected={({ selected }) =>
+            setSelectBehavior(
+              (["copy-name", "copy-file", "open-dialog"] as const)[selected],
+            )
           }
         />
       </Adw.PreferencesGroup>

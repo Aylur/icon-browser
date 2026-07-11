@@ -74,3 +74,67 @@ export function iconList(search?: string): IconList {
 
   return list as IconList
 }
+
+export function getIconFile(iconName: string, size = 48) {
+  const paintable = getTheme().lookup_icon(
+    iconName,
+    null,
+    size,
+    App.window.get_scale_factor(),
+    Gtk.TextDirection.NONE,
+    Gtk.IconLookupFlags.NONE,
+  )
+
+  return paintable.get_file()
+}
+
+export async function copyIconFile(iconName: string): Promise<boolean> {
+  const t = App.gettext
+  const file = getIconFile(iconName)
+  if (!file) throw Error(t("File does not exist"))
+
+  const dialog = new Gtk.FileDialog({
+    title: t("Save Icon"),
+    initialName: file.get_basename(),
+  })
+
+  try {
+    const target = await new Promise<Gio.File>((resolve, reject) => {
+      dialog.save(App.window, null, (_, result) => {
+        try {
+          resolve(dialog.save_finish(result))
+        } catch (error) {
+          reject(error)
+        }
+      })
+    })
+
+    return await new Promise<boolean>((resolve, reject) => {
+      file.copy_async(
+        target,
+        Gio.FileCopyFlags.BACKUP |
+          Gio.FileCopyFlags.OVERWRITE |
+          Gio.FileCopyFlags.ALL_METADATA |
+          Gio.FileCopyFlags.TARGET_DEFAULT_PERMS,
+        GLib.PRIORITY_DEFAULT,
+        null,
+        null,
+        (_, res) => {
+          try {
+            resolve(file.copy_finish(res))
+          } catch (error) {
+            reject(error)
+          }
+        },
+      )
+    })
+  } catch (err) {
+    if (
+      err instanceof GLib.Error &&
+      err.matches(Gtk.DialogError, Gtk.DialogError.DISMISSED)
+    ) {
+      return false
+    }
+    throw err
+  }
+}

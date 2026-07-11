@@ -6,15 +6,21 @@ import { Accessor, computed, newObject } from "gnim"
 
 export default function IconGrid(props: {
   model: Accessor<IconList>
+  onActivated: (icon: string) => void
   onSelected: (icon: string) => void
 }) {
   const model = newObject(Gtk.SingleSelection, {
     model: props.model,
+    onSelectionChanged() {
+      if (model.selectedItem instanceof Gtk.StringObject) {
+        props.onSelected(model.selectedItem.string)
+      }
+    },
   })
 
   function onActivate() {
     if (model.selectedItem instanceof Gtk.StringObject) {
-      props.onSelected(model.selectedItem.string)
+      props.onActivated(model.selectedItem.string)
     }
   }
 
