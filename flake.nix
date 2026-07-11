@@ -54,7 +54,7 @@
             pname = "pnpm-deps";
             src = ./.;
             fetcherVersion = 4;
-            hash = "sha256-hbUvoberd95MjBmHqehWp2oIXrMHjHR6+akbBE6n2cw=";
+            hash = "sha256-k0EdAz9tsHYT4dxTeBj6IdrdDyQEN/YzLyKRluaKjm8=";
           };
 
           nativeBuildInputs = [
