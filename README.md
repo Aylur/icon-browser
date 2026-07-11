@@ -1,6 +1,6 @@
 # Icon Browser
 
-A simple application that lets you browse the icons of your icon themes.
+A simple application that lets you browse the icons of your system-installed icon themes.
 
 ![dark](https://github.com/Aylur/icon-browser/blob/main/data/screenshots/dark.png)
 
@@ -15,7 +15,7 @@ nix run github:aylur/icon-browser
 ```sh
 git clone https://github.com/Aylur/icon-browser.git
 cd icon-browser
-npm install
+pnpm install
 meson setup build
 meson install -C build
 ```
@@ -24,5 +24,6 @@ meson install -C build
 
 - [ ] fuzzy query
 - [x] preferences page
-- [ ] preset categories similar to [icon-library](https://gitlab.gnome.org/World/design/icon-library)
+- [ ] preset categories similar to
+      [icon-library](https://gitlab.gnome.org/World/design/icon-library)
 - [ ] add desktop icon

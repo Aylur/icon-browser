@@ -1,5 +1,6 @@
 {
   "name": "icon-browser",
+  "version": "1.3.0",
   "type": "module",
   "author": "Aylur",
   "license": "MIT",
@@ -16,21 +17,24 @@
   },
   "devDependencies": {
     "@eslint/js": "latest",
-    "@girs/adw-1": "latest",
-    "esbuild": "latest",
     "eslint": "latest",
     "typescript": "latest",
     "typescript-eslint": "latest"
   },
   "scripts": {
-    "lint": "eslint . --fix"
-  },
-  "dependencies": {
-    "gnim": "latest"
+    "lint": "eslint . --fix",
+    "typecheck": "tsc",
+    "types": "gnim types -i Gtk-3.0 -i Gdk-3.0",
+    "dev": "gnim dev src/main.tsx",
+    "build": "meson setup build --wipe --prefix \"$(pwd)/dist\" ; meson install -C build"
   },
   "prettier": {
     "semi": false,
     "tabWidth": 2,
-    "printWidth": 100
+    "printWidth": 90
+  },
+  "dependencies": {
+    "@gnim-js/gtk4": "2.0.0-beta.7",
+    "gnim": "2.0.0-beta.7"
   }
 }

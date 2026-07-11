@@ -1,53 +1,70 @@
 project(
   'icon-browser',
-  version: run_command('cat', meson.project_source_root() / 'version').stdout().strip(),
+  version: run_command('pnpm', 'pkg', 'get', 'version', '--json=false').stdout().strip(),
 )
 
-app_id = 'dev.aylur.icon-browser'
-resource = '/dev/aylur/icon-browser'
-
+name = meson.project_name()
+root = meson.project_source_root()
 prefix = get_option('prefix')
-datadir = prefix / get_option('datadir')
-bindir = prefix / get_option('bindir')
-libdir = prefix / get_option('libdir')
-pkgdatadir = datadir / app_id
+datadir = get_option('datadir')
+bindir = get_option('bindir')
+libdir = get_option('libdir')
 
-dependency('gtk4')
+gnim = find_program('gnim', 'node_modules/.bin/gnim')
+app_id = 'dev.aylur.icon-browser'
+
 dependency('libadwaita-1')
+dependency('gtk4')
 
-subdir('data')
-
+# bundle
 custom_target(
-  input: configure_file(
-    input: 'src/main.ts',
-    output: app_id + '.js',
-    configuration: {
-      'gjs': find_program('gjs').full_path(),
-      'version': meson.project_version(),
-      'prefix': prefix,
-      'libdir': libdir,
-      'resource': resource,
-    },
-  ),
   command: [
-    find_program('esbuild', required: true),
-    '--bundle', '@INPUT@',
-    '--format=esm',
-    '--outfile=@OUTPUT@',
-    '--sourcemap=inline',
-    '--external:gi://*',
-    '--external:resource://*',
-    '--external:gettext',
-    '--external:system',
-    '--define:import.meta.appId="' + app_id + '"',
+    gnim,
+    'bundle',
+    root / 'src' / 'main.tsx',
+    '--id', app_id,
   ],
-  output: meson.project_name(),
   install: true,
-  install_dir: bindir,
+  install_dir: prefix / datadir / app_id,
+  output: 'gresource',
 )
 
+# executable
+custom_target(
+  command: [
+    gnim,
+    'exe',
+    prefix / datadir / app_id / 'gresource',
+    '-o', name,
+    '--id', app_id,
+    '--prefix', prefix,
+    '--datadir', datadir,
+    '--libdir', libdir,
+  ],
+  output: name,
+  install: true,
+  install_dir: prefix / bindir,
+)
+
+# schemas
+custom_target(
+  command: [gnim, 'schemas', root / 'src', '-o', 'schemas'],
+  output: 'schemas',
+  install: true,
+  install_dir: prefix / datadir / 'glib-2.0',
+)
+
+# desktop file
+configure_file(
+  input: 'data/in.desktop',
+  output: app_id + '.desktop',
+  configuration: {'EXEC': bindir / meson.project_name()},
+  install: true,
+  install_dir: datadir / 'applications',
+)
+
+# post install
 import('gnome').post_install(
-  # gtk_update_icon_cache: true,
   glib_compile_schemas: true,
   update_desktop_database: true,
 )
