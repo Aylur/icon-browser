@@ -16,10 +16,6 @@ export const schema = new Schema({
   id: "dev.aylur.icon-browser",
   path: "/dev/aylur/icon-browser/",
 })
-  .key("show-all", "b", {
-    default: false,
-    summary: "Show all available icons",
-  })
   .key("icon-size", "u", {
     default: 52,
     summary: "Size of icons in the list view.",

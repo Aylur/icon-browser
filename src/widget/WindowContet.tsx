@@ -4,7 +4,7 @@ import Adw from "gi://Adw?version=1"
 import Gio from "gi://Gio?version=2.0"
 import GLib from "gi://GLib?version=2.0"
 import Gtk from "gi://Gtk?version=4.0"
-import { computed, createState, effect, With } from "gnim"
+import { computed, createState, effect } from "gnim"
 import IconDetailsDialog from "./IconDetailsDialog"
 import IconGrid from "./IconGrid"
 
@@ -118,29 +118,17 @@ export default function WindowContent() {
       <Adw.ToastOverlay ref={(self) => (toasts = self)}>
         <Gtk.Stack visibleChildName={stackChild}>
           <Adw.Bin slot="named" name={Page.SEARCH}>
-            <With value={settings.showAll}>
-              {(all) =>
-                all ? (
-                  <Gtk.ScrolledWindow
-                    vexpand
-                    hscrollbarPolicy={Gtk.PolicyType.NEVER}
-                    vscrollbarPolicy={Gtk.PolicyType.AUTOMATIC}
-                  >
-                    <IconGrid
-                      model={allIcons}
-                      onActivated={onSelect}
-                      onSelected={setSelectedIcon}
-                    />
-                  </Gtk.ScrolledWindow>
-                ) : (
-                  <Adw.StatusPage
-                    iconName="system-search-symbolic"
-                    title={t("Start typing to search")}
-                    description={t("Search for icons by their name")}
-                  />
-                )
-              }
-            </With>
+            <Gtk.ScrolledWindow
+              vexpand
+              hscrollbarPolicy={Gtk.PolicyType.NEVER}
+              vscrollbarPolicy={Gtk.PolicyType.AUTOMATIC}
+            >
+              <IconGrid
+                model={allIcons}
+                onActivated={onSelect}
+                onSelected={setSelectedIcon}
+              />
+            </Gtk.ScrolledWindow>
           </Adw.Bin>
           <Gtk.ScrolledWindow
             slot="named"

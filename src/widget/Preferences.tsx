@@ -11,8 +11,6 @@ export default function PreferencesPage() {
   const themes = getThemeNames()
   const theme = bind(gtkSettings, "gtk-icon-theme-name")
   const {
-    showAll,
-    setShowAll,
     iconSize,
     setIconSize,
     colored,
@@ -24,14 +22,6 @@ export default function PreferencesPage() {
   return (
     <Adw.PreferencesPage title={t("Browser Preferences")}>
       <Adw.PreferencesGroup>
-        <Adw.SwitchRow
-          title={t("Show All Icons")}
-          subtitle={t(
-            "Turning this on might cause some lag if the theme contains a lot of icons",
-          )}
-          active={showAll}
-          onNotifyActive={({ active }) => setShowAll(active)}
-        />
         <Adw.SpinRow title={t("Icon Size")} subtitle={t("Size of the icons in the grid")}>
           <Gtk.Adjustment
             lower={8}

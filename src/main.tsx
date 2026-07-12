@@ -93,7 +93,6 @@ export default class App extends Adw.Application {
 
     if (App.isDev) {
       App.window.add_css_class("devel")
-      App.preferences.add_css_class("devel")
     }
 
     this.connect("shutdown", dispose)
