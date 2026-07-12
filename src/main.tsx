@@ -102,7 +102,7 @@ export default class App extends Adw.Application {
 /* main */ {
   const { gettext: t } = App.gettext
   GLib.set_prgname("icon-browser")
-  GLib.set_application_name(t("Gnim Demo Adwaita App"))
+  GLib.set_application_name(t("Icon Browser"))
 
   App.instance = new App()
   App.instance.runAsync([programInvocationName, ...programArgs]).catch(console.error)
